@@ -767,7 +767,3 @@ function lib:CreateSlider(title, description, parent, min, max)
 end
 
 return lib
-	return slider
-end
-
-return lib
