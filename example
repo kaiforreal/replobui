@@ -1,4 +1,4 @@
-local module = loadstring(game:HttpGet("https://raw.githubusercontent.com/deadmopose/Edge-ui-library/main/script.lua"))()
+local module = loadstring(game:HttpGet("https://raw.githubusercontent.com/kaiforreal/replobui/refs/heads/main/replobui.source"))()
 module:checkplayer()
 module:theme("black")
 
