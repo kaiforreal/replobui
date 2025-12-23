@@ -1,25 +1,21 @@
 local module = loadstring(game:HttpGet("https://raw.githubusercontent.com/kaiforreal/replobui/refs/heads/main/replobui.source"))()
 module:checkplayer()
-module:theme("black")
+module:theme("black") --more colors if u want, your choices are: ("red", "blue", "green", "purple")
+local main = module:main("FUCKK YEAAAS", "DESCRIPTION ACTUALLY WORKS NOW LETS FUCKING GOOOOOOOOOOOOOOOOO")
 
-local main = module:main("MAIN GUI FAWK", "Description (probably dont work yet LMAOOO)")
-
-module:CreateButton("touch me boy.", main, function()
-	print("Button touched")
+module:CreateButton("press me boy.", "main", function()
+	print("Clicked main!")
 end)
 
-module:CreateToggle("God Mode", main, false, function(state)
-	print("Toggle is now:", state)
+module:CreateButton("press him NOW!!", "main", function()
+	print("Clicked!")
 end)
 
-module:CreateToggle("left bar side thing idk anymore", sidebar, false, function(state)
-  print("boyy we got a toggle on our sidebar we're COOKING!!", state)
+module:CreateButton("yeah cmon dude", "sidebar", function()
+	print("Clicked sidebar!")
 end)
-
-module:CreateSlider("Volume", "Adjust volume", main, 0, 100)
 
 local subGui = module:createsubgui()
 module:CreateToggle("Sub Toggle", subGui, true, function(state)
-	print("Sub Toggle:", state)
+	print("Sub toggle:", state)
 end)
-module:CreateSlider("Sub Slider", "Sub desc", subGui, 0, 50)
