@@ -171,9 +171,8 @@ end
 
 
 local gui = Instance.new("ScreenGui")
-gui.Name = "REPLOBUI"
-gui.Parent = game.Players.LocalPlayer.PlayerGui
-
+gui.Name = http:GenerateGUID(false)
+gui.Parent = rs:IsStudio() == false and game:GetService("CoreGui") or localplayer:WaitForChild("PlayerGui")
 function lib:main(text, desc)
 	local servertoggled = ""
 	local fs = false
