@@ -174,7 +174,7 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "REPLOBUI"
 gui.Parent = game.Players.LocalPlayer.PlayerGui
 
-function lib:main(text, description)
+function lib:main(text, desc)
 	local servertoggled = ""
 	local fs = false
 	local min = false
@@ -191,6 +191,7 @@ function lib:main(text, description)
 	local leftuicorn = Instance.new("UICorner")
 	local Title = Instance.new("TextLabel")
 	local titleUICorner = Instance.new("UICorner")
+	local description = Instance.new("TextLabel")
 	local Settings
 	local CloseBtn = Instance.new("TextButton")
 	local closebtnuicon = Instance.new("UICorner")
@@ -293,6 +294,17 @@ function lib:main(text, description)
 	Title.TextColor3 = self.text_color
 	Title.TextSize = 13
 	Title.TextXAlignment = Enum.TextXAlignment.Left
+	
+	description.Parent = TopFrame
+	description.Name = "description"
+	description.BackgroundTransparency = 1
+	description.Position = UDim2.new(0.02, 0, 0.5, 10)
+	description.Size = UDim2.new(0, 400, 0, 10)
+	description.Font = Enum.Font.Gotham
+	description.Text = desc or "Made with ♡ by Reprobation"
+	description.TextColor3 = self.text_color
+	description.TextSize = 11
+	description.TextXAlignment = Enum.TextXAlignment.Left
 
 	CloseBtn.Parent = TopFrameHolder
 	CloseBtn.Name = "CloseButton"
@@ -478,35 +490,44 @@ function lib:CreateAddition(text, description, callback)
 	return btn
 end
 
-function lib:_ensureContentHolder(parent)
-	if parent:FindFirstChild("ContentHolder") then
-		return parent.ContentHolder
+function lib:_ensureContentHolder(frame)
+	if frame:FindFirstChild("ContentHolder") then
+		return frame.ContentHolder
 	end
 
 	local holder = Instance.new("Frame")
 	holder.Name = "ContentHolder"
-	holder.Parent = parent
+	holder.Parent = frame
 	holder.BackgroundTransparency = 1
 
-	local topOffset = 70
-	local leftOffset = 190
-	local rightOffset = 10
-	local bottomOffset = 10
+	local parentSize = frame.AbsoluteSize
+	local leftOffset = 0
+	local topOffset = 0
 
-	local parentSize = parent.AbsoluteSize
-	holder.Size = UDim2.new(1, -(leftOffset + rightOffset), 1, -(topOffset + bottomOffset))
-	holder.Position = UDim2.fromOffset(leftOffset, topOffset)
+	if frame.Name == "LeftFrame" then
+		leftOffset = 10
+		topOffset = 10
+	elseif frame.Name == "SubGUI" then
+		leftOffset = 10
+		topOffset = 10
+	elseif frame.Name == "MainFrame" or frame == self._MainFrame then
+		leftOffset = 177 + 15
+		topOffset = 65 + 15
+	end
+
+	holder.Position = UDim2.new(0, leftOffset, 0, topOffset)
+	holder.Size = UDim2.new(0, parentSize.X - leftOffset*2, 0, parentSize.Y - topOffset - 15)
 
 	local layout = Instance.new("UIListLayout")
-	layout.Padding = UDim.new(0, 8)
-	layout.FillDirection = Enum.FillDirection.Vertical
-	layout.HorizontalAlignment = Enum.HorizontalAlignment.Left
-	layout.VerticalAlignment = Enum.VerticalAlignment.Top
-	layout.SortOrder = Enum.SortOrder.LayoutOrder
 	layout.Parent = holder
+	layout.Padding = UDim.new(0, 10)
+	layout.FillDirection = Enum.FillDirection.Vertical
+	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
 
 	return holder
 end
+
 function lib:_connectFramesSmooth(a, b)
 	local line = Instance.new("Frame")
 	line.Parent = gui
@@ -593,12 +614,29 @@ function lib:createsubgui()
 	return sub
 end
 
+local function resolveParent(self, parent)
+	if typeof(parent) == "Instance" then
+		return parent
+	elseif typeof(parent) == "string" then
+		if parent:lower() == "main" then
+			return self._MainFrame
+		elseif parent:lower() == "sidebar" then
+			return self._AdditionsHolder
+		else
+			return gui:FindFirstChild(parent)
+		end
+	else
+		error("Invalid parent specified")
+	end
+end
+
 
 function lib:CreateButton(text, parent, callback)
-	assert(parent, "Parent GUI is required")
 	assert(typeof(callback) == "function", "Callback must be a function")
+	local resolvedParent = resolveParent(self, parent)
+	assert(resolvedParent, "Parent GUI not found")
 
-	local holder = self:_ensureContentHolder(parent)
+	local holder = self:_ensureContentHolder(resolvedParent)
 
 	local btn = Instance.new("TextButton")
 	btn.Parent = holder
@@ -618,10 +656,11 @@ function lib:CreateButton(text, parent, callback)
 end
 
 function lib:CreateToggle(text, parent, default, callback)
-	assert(parent, "Parent GUI is required")
+	local resolvedParent = resolveParent(self, parent)
+	assert(resolvedParent, "Parent GUI not found")
 	assert(typeof(callback) == "function", "Callback must be a function")
 
-	local holder = self:_ensureContentHolder(parent)
+	local holder = self:_ensureContentHolder(resolvedParent)
 
 	local toggle = Instance.new("TextButton")
 	toggle.Parent = holder
@@ -647,8 +686,10 @@ function lib:CreateToggle(text, parent, default, callback)
 end
 
 function lib:CreateSlider(title, description, parent, min, max)
-	assert(parent, "Parent GUI is required")
-	local holder = self:_ensureContentHolder(parent)
+	local resolvedParent = resolveParent(self, parent)
+	assert(resolvedParent, "Parent GUI not found")
+
+	local holder = self:_ensureContentHolder(resolvedParent)
 
 	local slider = Instance.new("Frame")
 	slider.Parent = holder
@@ -722,6 +763,10 @@ function lib:CreateSlider(title, description, parent, min, max)
 		fill.Size = UDim2.new(newX, 0, 1, 0)
 	end)
 
+	return slider
+end
+
+return lib
 	return slider
 end
 
