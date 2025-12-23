@@ -1,4 +1,4 @@
-local module = require(game.ReplicatedStorage.UIlib)
+local module = loadstring(game:HttpGet("https://raw.githubusercontent.com/deadmopose/Edge-ui-library/main/script.lua"))()
 module:checkplayer()
 module:theme("black")
 
