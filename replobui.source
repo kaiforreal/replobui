@@ -765,4 +765,24 @@ function lib:CreateSlider(title, description, parent, min, max)
 	return slider
 end
 
+function lib:CreateLabel(text, parent)
+	local resolvedParent = resolveParent(self, parent)
+	assert(resolvedParent, "Parent GUI not found")
+
+	local holder = self:_ensureContentHolder(resolvedParent)
+
+	local label = Instance.new("TextLabel")
+	label.Parent = holder
+	label.Size = UDim2.new(0.95, 0, 0, 20)
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.Font = Enum.Font.Gotham
+	label.TextSize = 12
+	label.TextColor3 = self.text_color
+	label.TextXAlignment = Enum.TextXAlignment.Left
+
+	return label
+end
+
+
 return lib
